@@ -21,9 +21,7 @@ To make everything work, you need to setup Dialogflow. In the blogpost you can a
 Run using `python setup.py --speech_in --speech_out` for speech based setup or `python setup.py` for text only version in the console. 
 
 ### Tests
-Tests have been created using python's unittest framework. To run the tests: 
-
-
+Tests have been created using python's unittest framework. I used Visual Studio Code to setup running the tests. Your setup may require the import statements to be organized differently.
 
 ## References 
 In building this game, I modified code coming from these awesome repos:
