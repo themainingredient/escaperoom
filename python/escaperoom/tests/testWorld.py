@@ -2,8 +2,8 @@ import unittest
 import time
 from .. import *
 
-actions = ["LookAround", "Open", "Close", "OpenDoor", "Pickup", "Drop", "LookAt", "Use", "Inventory", "ListActions", "GetPoints", "Read", "Exit"]
-items   = ["key", "drawer", "desktop", "legs", "lock", "door", "small key", "paper", "text", "box", "room"]
+actions = ["LookAround", "Open", "Close", "OpenDoor", "Pickup", "Drop", "LookAt", "Use", "Inventory", "ListActions", "GetPoints", "Read", "Exit", "Quit"]
+items   = ["key", "drawer", "desktop", "legs", "lock", "door", "small key", "paper", "writing", "box", "room"]
 
 def command(action, item=None, seconditem=None):
     result = world.theworld.applyAction(action, item_name=item, seconditem_name=seconditem)    
@@ -80,7 +80,7 @@ class TestWorld(unittest.TestCase):
         commandName = "ListActions"
         result = command(commandName)
         # print("\n"+commandName+"|"+result+"|")
-        self.assertTrue(result == "I understand the following commands: lookaround, open, close, opendoor, pickup, drop, lookat, use, inventory, listactions, getpoints, read, and exit.", "Actions not listed correctly")
+        self.assertTrue(result == "I understand the following commands: lookaround, open, close, opendoor, pickup, drop, lookat, use, inventory, listactions, getpoints, read, exit, and quit.", "Actions not listed correctly")
         self.assertTrue(world.theworld.getPoints() == 1, msg="Score should be 1 (only room seen)")
         self.assertTrue(len(world.theworld.knows) == 1)
 
@@ -115,8 +115,8 @@ class TestWorld(unittest.TestCase):
         item = "box"
         result = command(commandName, item=item)
         # print("\n"+commandName+"|"+result+"|")
-        self.assertTrue(result == "You see a cardboard box. It contains a small key.", msg="Lookat gave wrong result")
-        self.assertTrue(len(world.theworld.knows) == 5)
+        self.assertTrue(result == "You see a cardboard box. It contains a small key, a small piece of paper.", msg="Lookat gave wrong result")
+        self.assertTrue(len(world.theworld.knows) == 6)
 
         commandName = "Pickup"
         item = "small key"
@@ -139,8 +139,8 @@ class TestWorld(unittest.TestCase):
         result = command(commandName, item=item)
         # print("\n"+commandName+"|"+result+"|")
         self.assertTrue(result == "You see an old, mouldy wooden desk. It has a drawer, a desktop, and four table legs.")
-        self.assertTrue(world.theworld.getPoints() == 18, msg="Score should be 18 (8 items seen + 10 points for the key)")
-        self.assertTrue(len(world.theworld.knows) == 8)
+        self.assertTrue(world.theworld.getPoints() == 19, msg="Score should be 19 (9 items seen + 10 points for the key)")
+        self.assertTrue(len(world.theworld.knows) == 9)
 
         commandName = "LookAt"
         item = "drawer"
@@ -166,8 +166,8 @@ class TestWorld(unittest.TestCase):
         result = command(commandName, item=item, seconditem=item2)
         # print("\n"+commandName+"|"+result+"|")
         self.assertTrue(result == "You unlocked the drawer.")
-        self.assertTrue(world.theworld.getPoints() == 23, msg="Score should be 23 (8 items seen + 10 points for the key + 5 for unlocking the drawer)")
-        self.assertTrue(len(world.theworld.knows) == 8)
+        self.assertTrue(world.theworld.getPoints() == 24, msg="Score should be 24 (9 items seen + 10 points for the key + 5 for unlocking the drawer)")
+        self.assertTrue(len(world.theworld.knows) == 9)
 
         commandName = "LookAt"
         item = "key"
@@ -179,8 +179,8 @@ class TestWorld(unittest.TestCase):
         result = command(commandName, item=item)
         # print("\n"+commandName+"|"+result+"|")
         self.assertTrue(result == "You opened the drawer.")
-        self.assertTrue(world.theworld.getPoints() == 28, msg="Score should be 28 (8 items seen + 10 points for the key + 5 for unlocking the drawer + 5 for opening the drawer)")
-        self.assertTrue(len(world.theworld.knows) == 8)
+        self.assertTrue(world.theworld.getPoints() == 29, msg="Score should be 9 (9 items seen + 10 points for the key + 5 for unlocking the drawer + 5 for opening the drawer)")
+        self.assertTrue(len(world.theworld.knows) == 9)
 
         commandName = "LookAt"
         item = "key"
@@ -192,8 +192,8 @@ class TestWorld(unittest.TestCase):
         result = command(commandName, item=item)
         # print("\n"+commandName+"|"+result+"|")
         self.assertTrue(result == "You see a rickety old drawer. It's part of the desk. It contains a key. It's open.")
-        self.assertTrue(world.theworld.getPoints() == 29, msg="Score should be 29 (9 items seen + 10 points for the key + 5 for unlocking the drawer + 5 for opening the drawer)")
-        self.assertTrue(len(world.theworld.knows) == 9)
+        self.assertTrue(world.theworld.getPoints() == 30, msg="Score should be 30 (10 items seen + 10 points for the key + 5 for unlocking the drawer + 5 for opening the drawer)")
+        self.assertTrue(len(world.theworld.knows) == 10)
 
         commandName = "LookAt"
         item = "key"
@@ -210,8 +210,8 @@ class TestWorld(unittest.TestCase):
         self.assertTrue(key in world.theworld.inventory, msg="key should have been added to inventory")
         drawer = world.theworld.getItem("drawer")
         self.assertFalse(smallkey in drawer.items, msg="key should have been removed from drawer")
-        self.assertTrue(world.theworld.getPoints() == 39, msg="Score should be 29 (9 items seen + 10 points for the key + 5 for unlocking the drawer + 5 for opening the drawer + 10 for big key)")
-        self.assertTrue(len(world.theworld.knows) == 9)
+        self.assertTrue(world.theworld.getPoints() == 40, msg="Score should be 40 (10 items seen + 10 points for the key + 5 for unlocking the drawer + 5 for opening the drawer + 10 for big key)")
+        self.assertTrue(len(world.theworld.knows) == 10)
 
         commandName = "Close"
         item = "drawer"
@@ -240,8 +240,8 @@ class TestWorld(unittest.TestCase):
         self.assertTrue(result == "You unlocked the door.")
         door = world.theworld.getItem("door")
         self.assertTrue(door.getState() == "isClosed", "Door should be in isClosed:" + door.getState())
-        self.assertTrue(world.theworld.getPoints() == 49, msg="Score should be 49 (9 items seen + 10 points for the key + 5 for unlocking the drawer + 5 for opening the drawer + 10 for big key + 10 for unlocking the door)")
-        self.assertTrue(len(world.theworld.knows) == 9)
+        self.assertTrue(world.theworld.getPoints() == 50, msg="Score should be 50 (10 items seen + 10 points for the key + 5 for unlocking the drawer + 5 for opening the drawer + 10 for big key + 10 for unlocking the door)")
+        self.assertTrue(len(world.theworld.knows) == 10)
 
         commandName = "Open"
         item = "door"
@@ -250,8 +250,8 @@ class TestWorld(unittest.TestCase):
         self.assertTrue(result == "You opened the door.")
         door = world.theworld.getItem("door")
         self.assertTrue(door.getState() == "isOpen", "Door should be in isOpen:" + door.getState())
-        self.assertTrue(world.theworld.getPoints() == 59, msg="Score should be 49 (9 items seen + 10 points for the key + 5 for unlocking the drawer + 5 for opening the drawer + 10 for big key + 10 for unlocking the door + 10 for opening the door)")
-        self.assertTrue(len(world.theworld.knows) == 9)
+        self.assertTrue(world.theworld.getPoints() == 60, msg="Score should be 60 (10 items seen + 10 points for the key + 5 for unlocking the drawer + 5 for opening the drawer + 10 for big key + 10 for unlocking the door + 10 for opening the door)")
+        self.assertTrue(len(world.theworld.knows) == 10)
 
         self.assertTrue(world.theworld.won == False, msg="Somehow the game thinks you've already won...")
 
@@ -260,6 +260,6 @@ class TestWorld(unittest.TestCase):
         result = command(commandName, item=item)
 
         self.assertTrue(result == "You successfully exit the room. You feel overwhelmed by your great accomplishment. You won! You did not get all of the points though! Mysteries remain to be solved...", msg=result)
-        self.assertTrue(world.theworld.getPoints() == 79, msg="Score should be 49 (9 items seen + 10 points for the key + 5 for unlocking the drawer + 5 for opening the drawer + 10 for big key + 10 for unlocking the door + 10 for opening the door + 20 for leaving)")
-        self.assertTrue(len(world.theworld.knows) == 9)
+        self.assertTrue(world.theworld.getPoints() == 80, msg="Score should be 80 (10 items seen + 10 points for the key + 5 for unlocking the drawer + 5 for opening the drawer + 10 for big key + 10 for unlocking the door + 10 for opening the door + 20 for leaving)")
+        self.assertTrue(len(world.theworld.knows) == 10)
         self.assertTrue(world.theworld.won == True)
