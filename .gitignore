@@ -1,0 +1,21 @@
+.DS_Store
+
+# visual studio code 
+.vscode/
+escaperoom.code-workspace
+
+# private env vars 
+.env
+
+# python
+__pycache__/
+
+# tmp wav files 
+.wav
+
+# build folders 
+build/ 
+dist/
+*.egg-info/
+
+activate.sh
